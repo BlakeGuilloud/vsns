@@ -14,12 +14,15 @@ function getRandomInt(min, max) {
 
 function execute(program) {
   exec(`${program} --version`, (execError, stdin, stderr) => {
+    console.log('snderr', stderr)
     if (execError && execError.code === 127) {
       console.log(`${program} |`.toUpperCase(), 'Not found..');
     } else {
       const strColor = getRandomInt(0, colorOpts.length);
 
-      console.log(`${program} |`.toUpperCase(), stdin.toString().trim()[strColor]);
+      const returnVal = stdin || stderr;
+
+      console.log(`${program} |`.toUpperCase(), returnVal.toString().trim()[strColor]);
     }
   });
 }
