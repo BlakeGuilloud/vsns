@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const { exec } = require('child_process');
 const colors = require('colors');
+const fs = require('fs');
 
 const colorOpts = ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'gray'];
 
@@ -11,14 +12,40 @@ function getRandomInt(min, max) {
   return colorOpts[Math.floor(Math.random() * (max - min)) + min];
 }
 
-const programs = ['node', 'yarn', 'npm'];
-
 function execute(program) {
   exec(`${program} --version`, (execError, stdin, stderr) => {
-    const strColor = getRandomInt(0, colorOpts.length);
+    if (execError && execError.code === 127) {
+      console.log(`${program} |`.toUpperCase(), 'Not found..');
+    } else {
+      const strColor = getRandomInt(0, colorOpts.length);
 
-    console.log(`${program} |`.toUpperCase(), stdin.toString().trim()[strColor]);
+      console.log(`${program} |`.toUpperCase(), stdin.toString().trim()[strColor]);
+    }
   });
 }
 
-programs.forEach(execute);
+const configFile = process.cwd().split('/').slice(0, 3).join('/').concat('/.vsns');
+
+function writeAndReadFile(content) {
+  fs.writeFileSync(configFile, content);
+
+  fs.readFile(configFile, 'utf8', (err, data) => {
+    data.split(',').forEach(execute);
+  });
+}
+
+fs.readFile(configFile, 'utf8', (err, data) => {
+  if (!data) {
+    writeAndReadFile(['node', 'npm', 'yarn']);
+  } else if (process.argv[2] === 'add' && !data.includes(process.argv[3].toLowerCase())) {
+    writeAndReadFile(data.split(',').concat(process.argv[3]));
+  } else if (process.argv[2] === 'remove' && data.includes(process.argv[3].toLowerCase())) {
+    const content = data.split(',');
+    
+    content.splice(content.indexOf(process.argv[3]), 1);
+
+    writeAndReadFile(content);
+  } else {
+    data.split(',').forEach(execute);
+  }
+});
