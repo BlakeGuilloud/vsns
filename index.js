@@ -14,7 +14,6 @@ function getRandomInt(min, max) {
 
 function execute(program) {
   exec(`${program} --version`, (execError, stdin, stderr) => {
-    console.log('snderr', stderr)
     if (execError && execError.code === 127) {
       console.log(`${program} |`.toUpperCase(), 'Not found..');
     } else {
