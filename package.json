@@ -1,6 +1,6 @@
 {
   "name": "vsns",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Versions of things that you care about",
   "main": "index.js",
   "bin": {
