@@ -4,8 +4,6 @@
 
 vsns writes a `.vsns` file to the home directory and keeps track of different programs you add and remove to it's registry.
 
-The colors are random.
-
 ### Usage:
 
 ```bash
