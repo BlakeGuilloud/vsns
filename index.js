@@ -1,27 +1,16 @@
 #!/usr/bin/env node
 const { exec } = require('child_process');
+const colors = require('colors');
 const fs = require('fs');
-
-const colorOpts = ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'gray'];
-
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-
-  return colorOpts[Math.floor(Math.random() * (max - min)) + min];
-}
 
 function execute(program) {
   exec(`${program} --version`, (execError, stdin, stderr) => {
     if (execError && execError.code === 127) {
       console.log(`${program} |`.toUpperCase(), 'Not found..');
     } else {
-      const strColor = getRandomInt(0, colorOpts.length);
-
       const returnVal = stdin || stderr;
-      console.log('str color', strColor);
 
-      console.log(`${program} |`.toUpperCase(), returnVal.toString().trim()[strColor]);
+      console.log(`${program} |`.toUpperCase(), returnVal.toString().trim()['cyan']);
     }
   });
 }
